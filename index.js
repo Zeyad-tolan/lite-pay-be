@@ -13,6 +13,11 @@ app.use(express.json());
 // handleLogsMiddleware(app);
 
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to Litepay API",
+  });
+});
 // Start transaction polling
 startPolling((data) =>
   addNewTransaction(data)(null, {
