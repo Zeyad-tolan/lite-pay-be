@@ -1,3 +1,4 @@
+import pg from "pg";
 import { DataTypes, Sequelize } from "sequelize";
 import * as models from "./import.db.js"
 import env from "dotenv";
@@ -13,12 +14,14 @@ env.config();
 //   dialect: 'postgres',
 // });
 export const sequelize = new Sequelize(process.env.Db_Ext_Url, {
+  dialect: "postgres",
+  dialectModule: pg,
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false
-    }
-  }
+      rejectUnauthorized: false,
+    },
+  },
 });
 
 // start migration
