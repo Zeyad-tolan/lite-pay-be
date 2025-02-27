@@ -23,5 +23,3 @@ startPolling((data) =>
 );
 
 bootstrap(app);
-
-export default app;

@@ -51,10 +51,9 @@ const bootstrap = (app) => {
   .then(() => {
     // syncDb({force:true});
     // syncDb({alter:true});
-    // app.listen(port, () => {
-    //   console.log(`Server is running on port ${port}`);
-    // });
-    console.log("Database connection successful");
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
   })
   .catch((err) => {
     console.error("Database connection failed:", err.message || err);
