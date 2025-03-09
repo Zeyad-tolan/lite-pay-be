@@ -13,6 +13,7 @@ env.config();
 //   host: 'localhost',
 //   dialect: 'postgres',
 // });
+
 export const sequelize = new Sequelize(process.env.Db_Ext_Url, {
   dialect: "postgres",
   dialectModule: pg,
@@ -22,7 +23,18 @@ export const sequelize = new Sequelize(process.env.Db_Ext_Url, {
       rejectUnauthorized: false,
     },
   },
+  pool: {
+    max: 10,         
+    min: 0,          
+    acquire: 60000,  
+    idle: 10000,     
+  },
+  query: {
+    raw: true,
+  },
+  logging: false,
 });
+
 
 // start migration
 export const userModel = models.userModelDefinition(sequelize, Sequelize);
