@@ -106,3 +106,6 @@ async function checkDbConnection(attempt = 1) {
 
 // تشغيل المراقبة
 checkDbConnection();
+
+// تصدير الدالة الأصلية
+export default checkDbConnection;
