@@ -22,17 +22,8 @@ export const sequelize = new Sequelize(process.env.Db_Ext_Url, {
       rejectUnauthorized: false,
     },
   },
-  pool: {
-    max: 10,
-    min: 0,
-    acquire: 60000,
-    idle: 10000,
-  },
-  query: {
-    raw: true,
-  },
-  logging: false,
 });
+
 // start migration
 export const userModel = models.userModelDefinition(sequelize, Sequelize);
 export const roleModel = models.roleModelDefinition(sequelize, Sequelize);
@@ -80,17 +71,20 @@ export const syncDb = async (options) => {
   }
 };
 
-// دالة فحص الاتصال وإعادة تشغيل السيرفر عند الفشل
-async function checkDbConnection(attempt = 1) {
+export function fireDbConnection() {
+  return sequelize.authenticate();
+}
+
+export default async function monitorDbConnection(attempt = 1) {
   try {
-    await sequelize.authenticate();
+    await fireDbConnection();
     console.log("✅ Database connection successful");
   } catch (error) {
     console.error(`❌ Database connection failed (Attempt ${attempt}):`, error.message);
 
     if (attempt < 3) {
       console.log(`🔄 Retrying connection in 5 seconds...`);
-      setTimeout(() => checkDbConnection(attempt + 1), 5000);
+      setTimeout(() => monitorDbConnection(attempt + 1), 5000);
     } else {
       console.log("🚨 Maximum retries reached. Restarting server...");
       exec("pm2 restart all", (err, stdout, stderr) => {
@@ -104,8 +98,4 @@ async function checkDbConnection(attempt = 1) {
   }
 }
 
-// تشغيل المراقبة
-checkDbConnection();
-
-// تصدير الدالة الأصلية
-export default checkDbConnection;
+monitorDbConnection();
