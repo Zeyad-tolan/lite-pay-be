@@ -36,8 +36,8 @@ const getAllTransactions = async (offsetParam, limitParam) => {
 };
 
 export const displayBankTransactionsInterval = (callback) => {
-  let pollingInterval = 10000;
-  const maxInterval = 20000;
+  let pollingInterval = 100000;
+  const maxInterval = 200000;
   let intervalId;
   let offset = 0;
   let limit = 500;
@@ -135,7 +135,7 @@ export const displayBankTransactionsInterval = (callback) => {
         }
       }
 
-      pollingInterval = 10000;
+      pollingInterval = 100000;
     } catch (error) {
       pollingInterval = Math.min(maxInterval, pollingInterval * 2);
     } finally {
