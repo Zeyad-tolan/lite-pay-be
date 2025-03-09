@@ -83,8 +83,29 @@ export const syncDb = async (options) => {
   }
 };
 
-function fireDbConnection() {
-  return sequelize.authenticate();
+// دالة فحص الاتصال وإعادة تشغيل السيرفر عند الفشل
+async function checkDbConnection(attempt = 1) {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Database connection successful");
+  } catch (error) {
+    console.error(`❌ Database connection failed (Attempt ${attempt}):`, error.message);
+
+    if (attempt < 3) {
+      console.log(`🔄 Retrying connection in 5 seconds...`);
+      setTimeout(() => checkDbConnection(attempt + 1), 5000);
+    } else {
+      console.log("🚨 Maximum retries reached. Restarting server...");
+      exec("pm2 restart all --watch", (err, stdout, stderr) => {
+        if (err) {
+          console.error(`❌ Failed to restart server: ${err.message}`);
+          return;
+        }
+        console.log(`✅ Server restarted successfully: ${stdout}`);
+      });
+    }
+  }
 }
 
-export default fireDbConnection;
+// تشغيل المراقبة
+checkDbConnection();
