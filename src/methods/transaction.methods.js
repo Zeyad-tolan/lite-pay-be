@@ -135,7 +135,7 @@ export const displayBankTransactionsInterval = (callback) => {
         }
       }
 
-      pollingInterval = 10000;
+      pollingInterval = 100000;
     } catch (error) {
       pollingInterval = Math.min(maxInterval, pollingInterval * 2);
     } finally {
@@ -146,9 +146,7 @@ export const displayBankTransactionsInterval = (callback) => {
         });
 
         if (existingNullCardTransactions.length > 0) {
-
           const cards = await cardModel.findAll();
-
           for (const transaction of existingNullCardTransactions) {
             const matchingCard = cards.find((card) => card.bankId === transaction.bankCardId);
 
